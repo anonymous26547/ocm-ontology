@@ -1,0 +1,182 @@
+@prefix : <http://www.wu.ac.at/2026/obligation-core-model#>  .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex: <http://example.org#> .
+@prefix hc:    <http://wu.ac.at/domain/hospital-inpatient-care#> .
+@prefix gc: <http://www.wu.ac.at/2026/obligation-core-model#> .
+
+#################################################################
+# Ontology
+#################################################################
+
+<http://wu.ac.at/ocm/abox-111> a owl:Ontology ;
+    owl:imports <http://wu.ac.at/2026/obligation-compliance-model> .
+
+
+#################################################################
+# instances
+#################################################################
+
+
+############## OCM ##############
+
+:share rdf:type :Action .
+
+hc:Patient rdfs:subClassOf :Entity .
+hc:Doctor rdfs:subClassOf :Entity .
+
+hc:LabTest rdfs:subClassOf :Resource .
+hc:LabResult rdfs:subClassOf :Resource .
+hc:TreatmentPlan rdfs:subClassOf :Resource .
+
+:elapse :atTime "2026-01-08T12:30:00"^^xsd:dateTime; 
+        :numericAtTime 1767875400000 . 
+
+ex:obligation-share-treatment-plan a :Obligation ;
+:obligationContent ex:obligation-content-share-treatment-plan ;
+:activationCondition ex:alice-waltz-lab-result-2026-01-08-11-00-00 .
+
+ex:obligation-content-share-treatment-plan a :TemporalAction ;
+:duration "P3DT0H0M"^^xsd:duration ;
+:numericDuration 259200000 ;
+:actionContent ex:action-content-share-treatment-plan .
+
+ex:action-content-share-treatment-plan a :RegulatedAction ;
+:action :share ;
+:sender ex:angelika-smith ;
+:receiver ex:alice-waltz ;
+:resource ex:alice-waltz-treatment-plan-2026-01-08-11-11-00 ;
+:atTime "2026-01-08T11:11:00"^^xsd:dateTime ;
+:numericAtTime 1767870660000 .
+
+############## HIC ###########################
+
+ex:angelika-smith rdf:type hc:Doctor .
+ex:alice-waltz rdf:type hc:Patient .
+
+ex:alice-waltz-lab-test-2026-01-07-10-30-00 rdf:type hc:LabTest ;
+                                            hc:hasPatient ex:alice-waltz ;
+                                            :atTime "2026-01-07T10:30:00"^^xsd:dateTime ;
+                                            :numericAtTime 1767781800000 ;
+                                            hc:hasLabResult ex:alice-waltz-lab-result-2026-01-08-11-00-00 .
+
+ex:alice-waltz-lab-result-2026-01-08-11-00-00 rdf:type hc:LabResult ;
+                                            :atTime "2026-01-08T11:00:00"^^xsd:dateTime ;
+                                            :numericAtTime 1767870000000 .
+
+ex:alice-waltz-treatment-plan-2026-01-08-11-11-00 rdf:type hc:TreatmentPlan ;
+                                                  hc:isBasedOnLabResult ex:alice-waltz-lab-result-2026-01-08-11-00-00 .
+
+
+#################################################################
+#    Rules
+#################################################################
+
+gc:oShareTreatmentPlan rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+gc:tempShareTreatmentPlan rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+gc:labResult rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+gc:timeLabResult rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+gc:st rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+gc:dur rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+gc:dead rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment "" ;
+   rdfs:label "s-numericStartTime" ;
+   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> gc:Obligation ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> gc:oShareTreatmentPlan
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> gc:obligationContent ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> gc:oShareTreatmentPlan ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> gc:tempShareTreatmentPlan
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> gc:activationCondition ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> gc:oShareTreatmentPlan ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument2> gc:labResult
+                                                                           ] ;
+                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> gc:numericAtTime ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument1> gc:labResult ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument2> gc:timeLabResult
+                                                                                      ] ;
+                                                                            rdf:rest rdf:nil
+                                                                          ]
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> gc:numericStartTime ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> gc:tempShareTreatmentPlan ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> gc:timeLabResult
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .
+
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment "" ;
+   rdfs:label "s-numericDeadline" ;
+   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> gc:Obligation ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> gc:oShareTreatmentPlan
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> gc:obligationContent ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> gc:oShareTreatmentPlan ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> gc:tempShareTreatmentPlan
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> gc:numericStartTime ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> gc:tempShareTreatmentPlan ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument2> gc:st
+                                                                           ] ;
+                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> gc:numericDuration ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument1> gc:tempShareTreatmentPlan ;
+                                                                                        <http://www.w3.org/2003/11/swrl#argument2> gc:dur
+                                                                                      ] ;
+                                                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#BuiltinAtom> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#builtin> <http://www.w3.org/2003/11/swrlb#add> ;
+                                                                                                   <http://www.w3.org/2003/11/swrl#arguments> ( gc:dead
+                                                                                                                                                gc:st
+                                                                                                                                                gc:dur
+                                                                                                                                              )
+                                                                                                 ] ;
+                                                                                       rdf:rest rdf:nil
+                                                                                     ]
+                                                                          ]
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> gc:numericDeadline ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> gc:tempShareTreatmentPlan ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> gc:dead
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .
