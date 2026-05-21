@@ -8,7 +8,7 @@ Patients using OncoAid can view and manage their personal data through their own
 
 ### Running Example
 
-The running example, depicted in Figure `use-case`, illustrates the process of inpatient care at **CityCare Hospital**, where Alice is admitted for treatment. Upon admission, her doctor, **Dr. Smith**, performs various laboratory tests.
+The running example, depicted in the below figure, illustrates the process of inpatient care at **CityCare Hospital**, where Alice is admitted for treatment. Upon admission, her doctor, **Dr. Smith**, performs various laboratory tests.
 
 By the end of her stay, a diagnosis is concluded, and all diagnostic notes and laboratory results are stored in the hospital KG. During Alice's hospitalization, the following scenarios are envisaged:
 
@@ -25,6 +25,8 @@ By the end of her stay, a diagnosis is concluded, and all diagnostic notes and l
   After Alice is discharged from CityCare Hospital, her doctor **must** sign and finalize her diagnostic report within **12 hours**. Alice's discharge marks the actual end of her inpatient care.
 
 The different scenarios highlight various obligations governing data usage. Each obligation is regulated by temporal rules that determine the time frame in which these obligations must be fulfilled.
+
+![OncoAid](https://github.com/anonymous26547/ocm-ontology/blob/main/use-case/medical-use-case.pdf)
 
 ## Instantiation
 
